@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started &#8212; P4P 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="P4P 0 documentation" href="index.html" />
+    <link rel="next" title="Working with Value and Type" href="values.html" />
+    <link rel="prev" title="Building" href="building.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="values.html" title="Working with Value and Type"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">P4P 0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started">
+<span id="starting"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>The following assumes a PVAccess server providing a PV named &#8216;test:array&#8217; which is an NTScalarArray.
+See below for an example of how to set this up.</p>
+<p>Import and create a client <a class="reference internal" href="client.html#p4p.client.thread.Context" title="p4p.client.thread.Context"><code class="xref py py-class docutils literal"><span class="pre">p4p.client.thread.Context</span></code></a> for the PVAccess protocol.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">p4p.client.thread</span> <span class="k">import</span> <span class="n">Context</span>
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now issue a <a class="reference internal" href="client.html#p4p.client.thread.Context.get" title="p4p.client.thread.Context.get"><code class="xref py py-meth docutils literal"><span class="pre">p4p.client.thread.Context.get()</span></code></a> network operation for a PV named &#8216;test:array&#8217;.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">val</span> <span class="o">=</span> <span class="n">ctxt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;test:array&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">val</span>
+</pre></div>
+</div>
+<p>Due to <a class="reference internal" href="nt.html#unwrap"><span class="std std-ref">Automatic Value unwrapping</span></a> (which can be disabled) the type of &#8216;val&#8217; is a <a class="reference internal" href="nt.html#p4p.nt.scalar.ntnumericarray" title="p4p.nt.scalar.ntnumericarray"><code class="xref py py-class docutils literal"><span class="pre">p4p.nt.scalar.ntnumericarray</span></code></a>.
+Which can be treated as a normal numpy array with additional attributes to access the timestamp and alarm information.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="n">val</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="nb">print</span> <span class="n">val</span><span class="o">.</span><span class="n">timestamp</span>
+<span class="nb">print</span> <span class="n">val</span><span class="o">.</span><span class="n">severity</span>
+</pre></div>
+</div>
+<p>The underlying <a class="reference internal" href="values.html#p4p.Value" title="p4p.Value"><code class="xref py py-class docutils literal"><span class="pre">p4p.Value</span></code></a> can be accessed with the &#8216;raw&#8217; attribute.
+For types which are not automatically unwrap, a <a class="reference internal" href="values.html#p4p.Value" title="p4p.Value"><code class="xref py py-class docutils literal"><span class="pre">p4p.Value</span></code></a> is returned.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="n">val</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">value</span>
+<span class="nb">print</span> <span class="n">val</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">alarm</span><span class="o">.</span><span class="n">severity</span>
+</pre></div>
+</div>
+<p>To change a value with a <a class="reference internal" href="client.html#p4p.client.thread.Context.put" title="p4p.client.thread.Context.put"><code class="xref py py-meth docutils literal"><span class="pre">p4p.client.thread.Context.put()</span></code></a> operation.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;test:array&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">ctxt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;test:array&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">val</span>
+</pre></div>
+</div>
+<p>To start and stop a subscription with <a class="reference internal" href="client.html#p4p.client.thread.Context.monitor" title="p4p.client.thread.Context.monitor"><code class="xref py py-meth docutils literal"><span class="pre">p4p.client.thread.Context.monitor()</span></code></a>
+which returns a <a class="reference internal" href="client.html#p4p.client.thread.Subscription" title="p4p.client.thread.Subscription"><code class="xref py py-class docutils literal"><span class="pre">p4p.client.thread.Subscription</span></code></a>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+   <span class="nb">print</span> <span class="n">val</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">ctxt</span><span class="o">.</span><span class="n">monitor</span><span class="p">(</span><span class="s1">&#39;test:array&#39;</span><span class="p">,</span> <span class="n">show</span><span class="p">)</span>
+<span class="c1"># current value is printed when monitor subscription is created</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;test:array&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+<span class="c1"># subscription update with new value is printed</span>
+<span class="n">S</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> <span class="c1"># end subscription</span>
+</pre></div>
+</div>
+<div class="section" id="demo-ioc-setup">
+<h2>Demo IOC Setup<a class="headerlink" href="#demo-ioc-setup" title="Permalink to this headline">¶</a></h2>
+<p>If the pva2pva module is built (see <a class="reference internal" href="building.html#builddeps"><span class="std std-ref">Building EPICS dependencies</span></a>) then create a demo database file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span> <span class="o">&gt;</span> <span class="n">p4p</span><span class="o">-</span><span class="n">demo</span><span class="o">.</span><span class="n">db</span>
+<span class="n">record</span><span class="p">(</span><span class="n">ao</span><span class="p">,</span> <span class="s2">&quot;test:scalar&quot;</span><span class="p">)</span> <span class="p">{}</span>
+<span class="n">record</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span> <span class="s2">&quot;test:array&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">FTVL</span><span class="p">,</span> <span class="s2">&quot;DOUBLE&quot;</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">(</span><span class="n">NELM</span><span class="p">,</span> <span class="s2">&quot;100&quot;</span><span class="p">)</span> <span class="c1"># max element count</span>
+<span class="p">}</span>
+<span class="n">EOF</span>
+<span class="o">./</span><span class="n">pva2pva</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">softIocPVA</span> <span class="o">-</span><span class="n">d</span> <span class="n">p4p</span><span class="o">-</span><span class="n">demo</span><span class="o">.</span><span class="n">db</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#demo-ioc-setup">Demo IOC Setup</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="building.html"
+                        title="previous chapter">Building</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="values.html"
+                        title="next chapter">Working with Value and Type</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/starting.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="values.html" title="Working with Value and Type"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">P4P 0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Michael Davidsaver.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.9.
+    </div>
+  </body>
+</html>
