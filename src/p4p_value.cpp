@@ -1124,6 +1124,28 @@ PyObject *P4PValue_id(PyObject *self)
     return NULL;
 }
 
+PyObject *P4PValue_fullName(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    TRY {
+        const char *names[] = {"name", NULL};
+        const char *name = NULL;
+        if(!PyArg_ParseTupleAndKeywords(args, kwds, "|z", (char**)names, &name))
+            return NULL;
+
+        pvd::PVFieldPtr fld;
+        if(name)
+            fld = SELF.V->getSubField(name);
+        else
+            fld = SELF.V;
+
+        if(!fld)
+            return PyErr_Format(PyExc_KeyError, "%s", name);
+
+        return PyUnicode_FromString(fld->getFullName().c_str());
+    }CATCH()
+    return NULL;
+}
+
 PyObject *P4PValue_gettype(PyObject *self, PyObject *args)
 {
     TRY {
@@ -1387,6 +1409,9 @@ static PyMethodDef P4PValue_methods[] = {
     {"getID", (PyCFunction)&P4PValue_id, METH_NOARGS,
      "getID()\n"
      "Return Structure ID string"},
+    {"fullName", (PyCFunction)&P4PValue_fullName, METH_VARARGS|METH_KEYWORDS,
+     "fullName(name=None) -> str\n"
+     "Give the fully qualified name, from the root structure, of this sub-structure, or a field of it"},
     {"type", (PyCFunction)&P4PValue_gettype, METH_VARARGS,
      "type( [\"fld\"] )\n"
      "\n"
